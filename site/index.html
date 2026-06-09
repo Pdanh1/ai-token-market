@@ -4,25 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>智算令牌集市 | AI 大模型 Token 采购</title>
-  <meta name="description" content="面向中国客户的 AI 大模型 Token 采购预登记页面，支持主流模型套餐咨询、发票信息登记和企业审核。">
+  <meta name="description" content="面向中国客户的 AI 大模型 Token 采购咨询站，按官方 API 价格展示不同模型的输入与输出 Token 单价。">
   <style>
     :root {
-      --bg: oklch(1 0 0);
-      --surface: oklch(0.972 0.003 230);
-      --surface-2: oklch(0.94 0.008 230);
-      --ink: oklch(0.17 0.018 230);
-      --muted: oklch(0.42 0.022 230);
-      --line: oklch(0.87 0.01 230);
-      --primary: oklch(0.56 0.17 36);
-      --primary-strong: oklch(0.48 0.16 36);
-      --accent: oklch(0.34 0.13 218);
-      --accent-soft: oklch(0.93 0.035 218);
-      --success: oklch(0.48 0.13 154);
-      --warning: oklch(0.68 0.16 78);
-      --danger: oklch(0.55 0.18 28);
-      --shadow: 0 18px 48px oklch(0.18 0.03 230 / 0.13);
+      --bg: oklch(0.095 0 0);
+      --panel: oklch(0.145 0.018 244);
+      --panel-2: oklch(0.19 0.022 244);
+      --ink: oklch(0.94 0.018 220);
+      --muted: oklch(0.73 0.035 226);
+      --line: oklch(0.34 0.055 232);
+      --cyan: oklch(0.78 0.15 210);
+      --blue: oklch(0.58 0.19 255);
+      --amber: oklch(0.78 0.16 72);
+      --magenta: oklch(0.68 0.2 338);
+      --green: oklch(0.72 0.16 154);
+      --danger: oklch(0.66 0.2 25);
+      --shadow: 0 26px 70px oklch(0 0 0 / 0.45);
       --radius: 8px;
       --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
     }
 
     * {
@@ -35,12 +35,27 @@
 
     body {
       margin: 0;
+      min-height: 100vh;
       background:
-        radial-gradient(circle at 88% 4%, oklch(0.88 0.08 36 / 0.36), transparent 28rem),
-        linear-gradient(180deg, var(--bg), oklch(0.985 0.004 230));
+        linear-gradient(90deg, oklch(1 0 0 / 0.035) 1px, transparent 1px),
+        linear-gradient(0deg, oklch(1 0 0 / 0.028) 1px, transparent 1px),
+        linear-gradient(135deg, oklch(0.09 0.018 260), oklch(0.12 0.02 220) 42%, oklch(0.08 0.01 180));
+      background-size: 42px 42px, 42px 42px, auto;
       color: var(--ink);
       font-family: var(--font);
       line-height: 1.5;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, transparent, oklch(0.78 0.15 210 / 0.05), transparent),
+        repeating-linear-gradient(180deg, oklch(1 0 0 / 0.035) 0 1px, transparent 1px 6px);
+      mix-blend-mode: screen;
+      opacity: 0.55;
     }
 
     button,
@@ -55,9 +70,11 @@
     }
 
     .app {
+      position: relative;
+      z-index: 1;
       min-height: 100vh;
       display: grid;
-      grid-template-columns: 264px minmax(0, 1fr);
+      grid-template-columns: 270px minmax(0, 1fr);
     }
 
     aside {
@@ -66,8 +83,8 @@
       height: 100vh;
       padding: 22px;
       border-right: 1px solid var(--line);
-      background: oklch(0.99 0 0 / 0.86);
-      backdrop-filter: blur(16px);
+      background: oklch(0.11 0.014 240 / 0.86);
+      backdrop-filter: blur(18px);
       display: flex;
       flex-direction: column;
       gap: 24px;
@@ -77,20 +94,22 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-weight: 800;
+      font-weight: 820;
       font-size: 18px;
       letter-spacing: 0;
     }
 
     .mark {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: var(--radius);
       display: grid;
       place-items: center;
-      color: white;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      box-shadow: 0 12px 24px oklch(0.45 0.14 36 / 0.22);
+      color: oklch(0.08 0 0);
+      background: linear-gradient(135deg, var(--cyan), var(--amber));
+      box-shadow: 0 0 22px oklch(0.78 0.15 210 / 0.38);
+      font-family: var(--mono);
+      font-weight: 900;
     }
 
     nav {
@@ -100,17 +119,19 @@
 
     nav a {
       padding: 10px 12px;
+      border: 1px solid transparent;
       border-radius: var(--radius);
       color: var(--muted);
       text-decoration: none;
       font-size: 14px;
-      transition: background 180ms ease, color 180ms ease;
+      transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
     }
 
     nav a:hover,
     nav a.active {
-      background: var(--accent-soft);
-      color: var(--accent);
+      border-color: oklch(0.78 0.15 210 / 0.42);
+      background: oklch(0.78 0.15 210 / 0.1);
+      color: var(--cyan);
     }
 
     .side-box {
@@ -118,7 +139,7 @@
       padding: 14px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--bg);
+      background: oklch(0.13 0.018 236 / 0.86);
       color: var(--muted);
       font-size: 13px;
     }
@@ -157,12 +178,12 @@
       align-items: center;
       gap: 8px;
       padding: 7px 10px;
-      border: 1px solid oklch(0.82 0.04 154);
+      border: 1px solid oklch(0.72 0.16 154 / 0.42);
       border-radius: 999px;
-      background: oklch(0.96 0.035 154);
-      color: oklch(0.32 0.11 154);
+      background: oklch(0.72 0.16 154 / 0.11);
+      color: var(--green);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 740;
       white-space: nowrap;
     }
 
@@ -170,13 +191,13 @@
       width: 8px;
       height: 8px;
       border-radius: 999px;
-      background: var(--success);
-      box-shadow: 0 0 0 4px oklch(0.6 0.13 154 / 0.16);
+      background: var(--green);
+      box-shadow: 0 0 0 4px oklch(0.72 0.16 154 / 0.14);
     }
 
     .hero {
       display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      grid-template-columns: minmax(0, 1.04fr) minmax(340px, 0.96fr);
       gap: 24px;
       align-items: stretch;
     }
@@ -184,30 +205,35 @@
     .panel {
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: oklch(1 0 0 / 0.92);
+      background: linear-gradient(180deg, oklch(0.16 0.02 240 / 0.92), oklch(0.12 0.016 238 / 0.94));
       box-shadow: var(--shadow);
     }
 
     .hero-copy {
-      min-height: 370px;
+      min-height: 420px;
       padding: 30px;
       display: grid;
-      align-content: space-between;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 22px;
+      align-items: center;
       overflow: hidden;
       position: relative;
     }
 
-    .hero-copy::after {
+    .hero-copy::before {
       content: "";
       position: absolute;
-      right: -110px;
-      bottom: -120px;
-      width: 310px;
-      height: 310px;
-      border-radius: 50%;
-      background: conic-gradient(from 150deg, var(--primary), var(--accent), oklch(0.7 0.16 78), var(--primary));
-      opacity: 0.14;
-      filter: blur(8px);
+      inset: 0;
+      background:
+        linear-gradient(115deg, transparent 0 56%, oklch(0.78 0.15 210 / 0.08) 56% 58%, transparent 58%),
+        linear-gradient(180deg, oklch(0.78 0.15 210 / 0.04), transparent 46%);
+      pointer-events: none;
+    }
+
+    .hero-text,
+    .holo {
+      position: relative;
+      z-index: 1;
     }
 
     h1,
@@ -220,38 +246,91 @@
     h1 {
       max-width: 13ch;
       margin-bottom: 18px;
-      font-size: 48px;
-      line-height: 1.05;
+      font-size: 50px;
+      line-height: 1.04;
       letter-spacing: 0;
       text-wrap: balance;
     }
 
     .lead {
-      max-width: 62ch;
+      max-width: 60ch;
       color: var(--muted);
       font-size: 16px;
       text-wrap: pretty;
+    }
+
+    .holo {
+      min-height: 300px;
+      border: 1px solid oklch(0.78 0.15 210 / 0.38);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, oklch(0.78 0.15 210 / 0.1), transparent),
+        repeating-linear-gradient(90deg, transparent 0 14px, oklch(0.78 0.15 210 / 0.12) 14px 15px),
+        oklch(0.1 0.02 238 / 0.72);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .core {
+      width: 190px;
+      aspect-ratio: 1;
+      border: 1px solid oklch(0.78 0.15 210 / 0.7);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      position: relative;
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 13px;
+      box-shadow: inset 0 0 34px oklch(0.78 0.15 210 / 0.14), 0 0 44px oklch(0.78 0.15 210 / 0.18);
+      animation: pulse 3.4s ease-in-out infinite;
+    }
+
+    .core::before,
+    .core::after {
+      content: "";
+      position: absolute;
+      border: 1px solid oklch(0.78 0.15 210 / 0.38);
+      border-radius: 50%;
+      inset: 24px;
+      transform: rotateX(68deg) rotateZ(15deg);
+    }
+
+    .core::after {
+      inset: 46px;
+      border-color: oklch(0.78 0.16 72 / 0.5);
+      transform: rotateX(66deg) rotateZ(-38deg);
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-6px);
+      }
     }
 
     .metrics {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
-      position: relative;
-      z-index: 1;
+      margin-top: 28px;
     }
 
     .metric {
       padding: 14px;
-      border: 1px solid var(--line);
+      border: 1px solid oklch(0.78 0.15 210 / 0.24);
       border-radius: var(--radius);
-      background: var(--surface);
+      background: oklch(0.11 0.018 240 / 0.66);
     }
 
     .metric strong {
       display: block;
       font-size: 22px;
       line-height: 1.1;
+      color: var(--cyan);
     }
 
     .metric span {
@@ -272,6 +351,9 @@
     .model-grid {
       display: grid;
       gap: 10px;
+      max-height: 458px;
+      overflow: auto;
+      padding-right: 4px;
       margin-bottom: 18px;
     }
 
@@ -284,7 +366,7 @@
       padding: 14px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--bg);
+      background: oklch(0.12 0.016 238 / 0.92);
       color: var(--ink);
       text-align: left;
       cursor: pointer;
@@ -292,13 +374,13 @@
     }
 
     .model-option:hover {
-      border-color: oklch(0.75 0.06 36);
+      border-color: oklch(0.78 0.15 210 / 0.55);
       transform: translateY(-1px);
     }
 
     .model-option.selected {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px oklch(0.56 0.17 36 / 0.14);
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px oklch(0.78 0.15 210 / 0.12), 0 0 28px oklch(0.78 0.15 210 / 0.16);
     }
 
     .radio {
@@ -311,7 +393,7 @@
     }
 
     .selected .radio {
-      border-color: var(--primary);
+      border-color: var(--cyan);
     }
 
     .selected .radio::after {
@@ -319,12 +401,13 @@
       width: 8px;
       height: 8px;
       border-radius: 999px;
-      background: var(--primary);
+      background: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan);
     }
 
     .model-option b {
       display: block;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
 
     .model-option small {
@@ -332,9 +415,11 @@
     }
 
     .price {
-      color: var(--accent);
+      color: var(--amber);
+      font-family: var(--mono);
       font-weight: 800;
       white-space: nowrap;
+      text-align: right;
     }
 
     .form-grid {
@@ -355,7 +440,7 @@
     label {
       color: var(--muted);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 720;
     }
 
     input,
@@ -365,7 +450,7 @@
       padding: 11px 12px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--bg);
+      background: oklch(0.1 0.012 240);
       color: var(--ink);
       outline: none;
       transition: border-color 150ms ease, box-shadow 150ms ease;
@@ -379,8 +464,8 @@
     input:focus,
     select:focus,
     textarea:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px oklch(0.56 0.17 36 / 0.14);
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px oklch(0.78 0.15 210 / 0.14);
     }
 
     .check {
@@ -396,7 +481,7 @@
       width: 17px;
       height: 17px;
       margin-top: 2px;
-      accent-color: var(--primary);
+      accent-color: var(--cyan);
     }
 
     .actions {
@@ -410,7 +495,7 @@
       padding: 11px 14px;
       border: 1px solid transparent;
       border-radius: var(--radius);
-      font-weight: 760;
+      font-weight: 780;
       cursor: pointer;
       transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
     }
@@ -420,23 +505,21 @@
     }
 
     .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-strong);
+      background: var(--cyan);
+      color: oklch(0.08 0 0);
+      box-shadow: 0 0 22px oklch(0.78 0.15 210 / 0.22);
     }
 
     .btn-secondary {
       border-color: var(--line);
-      background: var(--surface);
+      background: oklch(0.12 0.016 238);
       color: var(--ink);
     }
 
-    .below {
+    .below,
+    .sections {
       display: grid;
-      grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.1fr);
+      grid-template-columns: minmax(320px, 0.88fr) minmax(0, 1.12fr);
       gap: 22px;
     }
 
@@ -476,10 +559,10 @@
     .notice {
       margin-top: 16px;
       padding: 13px;
-      border: 1px solid oklch(0.82 0.09 78);
+      border: 1px solid oklch(0.78 0.16 72 / 0.46);
       border-radius: var(--radius);
-      background: oklch(0.96 0.04 78);
-      color: oklch(0.34 0.08 78);
+      background: oklch(0.78 0.16 72 / 0.1);
+      color: oklch(0.88 0.12 78);
       font-size: 13px;
     }
 
@@ -517,25 +600,19 @@
       white-space: nowrap;
     }
 
-    .pill.hot {
-      background: var(--primary);
-      color: white;
+    .pill.usd {
+      background: oklch(0.78 0.15 210 / 0.14);
+      color: var(--cyan);
     }
 
-    .pill.local {
-      background: var(--accent);
-      color: white;
+    .pill.cny {
+      background: oklch(0.78 0.16 72 / 0.14);
+      color: var(--amber);
     }
 
     .pill.wait {
-      background: oklch(0.93 0.05 78);
-      color: oklch(0.35 0.08 78);
-    }
-
-    .sections {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
+      background: oklch(0.68 0.2 338 / 0.14);
+      color: oklch(0.82 0.14 338);
     }
 
     .steps {
@@ -560,8 +637,9 @@
       border-radius: 999px;
       display: grid;
       place-items: center;
-      background: var(--accent-soft);
-      color: var(--accent);
+      background: oklch(0.78 0.15 210 / 0.12);
+      color: var(--cyan);
+      font-family: var(--mono);
       font-size: 13px;
       font-weight: 800;
     }
@@ -571,15 +649,30 @@
       color: var(--ink);
     }
 
+    .source-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .source-list a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+
     .toast {
       position: fixed;
       right: 24px;
       bottom: 24px;
-      max-width: 360px;
+      max-width: 380px;
       padding: 14px 16px;
+      border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--ink);
-      color: white;
+      background: oklch(0.12 0.016 238);
+      color: var(--ink);
       box-shadow: var(--shadow);
       opacity: 0;
       transform: translateY(14px);
@@ -593,7 +686,7 @@
       transform: translateY(0);
     }
 
-    @media (max-width: 1040px) {
+    @media (max-width: 1100px) {
       .app {
         grid-template-columns: 1fr;
       }
@@ -620,7 +713,7 @@
       }
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 760px) {
       main,
       aside {
         padding: 16px;
@@ -636,9 +729,13 @@
       }
 
       .hero-copy {
+        grid-template-columns: 1fr;
         min-height: auto;
         padding: 22px;
-        gap: 24px;
+      }
+
+      .holo {
+        min-height: 220px;
       }
 
       h1 {
@@ -657,10 +754,11 @@
 
       .price {
         grid-column: 2;
+        text-align: left;
       }
 
-      th:nth-child(3),
-      td:nth-child(3) {
+      th:nth-child(4),
+      td:nth-child(4) {
         display: none;
       }
 
@@ -676,6 +774,7 @@
       *::before,
       *::after {
         scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
       }
     }
@@ -689,65 +788,93 @@
         <span>智算令牌集市</span>
       </div>
       <nav aria-label="主导航">
-        <a class="active" href="#order">采购登记</a>
-        <a href="#summary">订单摘要</a>
-        <a href="#catalog">模型目录</a>
+        <a class="active" href="#order">模型选购</a>
+        <a href="#summary">咨询摘要</a>
+        <a href="#catalog">官方价格</a>
         <a href="#flow">交付流程</a>
       </nav>
       <div class="side-box">
-        <strong>企业采购预登记</strong>
-        页面只收集需求和联系方式，不在线收款、不自动开通模型、不存储 API Key。正式交易需合同、发票、实名主体和合规审核。
+        <strong>官方 API 基准价</strong>
+        页面展示各模型官方公开单价，单位为每百万 Token。最终报价需确认供应渠道、税费、汇率、服务费、可用地区和供应商条款。
       </div>
     </aside>
 
     <main>
       <div class="topbar">
         <div>
-          <strong>面向中国客户的 AI 大模型 Token 采购入口</strong>
-          <span>用于展示套餐、收集询价、生成待跟进线索，后续可接 CRM、支付和后台审核。</span>
+          <strong>AI 大模型 Token 采购控制台</strong>
+          <span>为中国客户集中对比不同模型的输入、缓存与输出 Token 成本。</span>
         </div>
-        <div class="badge"><span class="dot"></span>静态演示版</div>
+        <div class="badge"><span class="dot"></span>价格已按官方页更新</div>
       </div>
 
       <section class="hero" id="order">
         <div class="panel hero-copy">
-          <div>
-            <h1>一站式登记大模型 Token 需求</h1>
-            <p class="lead">为团队、工作室和中小企业提供多模型额度采购咨询：OpenAI、Claude、Gemini、DeepSeek、通义千问、智谱、月之暗面等。先把客户需求、发票主体和交付偏好收齐，再交给运营人工确认。</p>
+          <div class="hero-text">
+            <h1>选择你的模型算力轨道</h1>
+            <p class="lead">从低成本中文模型到旗舰推理模型，每个模型独立标价。客户先选择目标模型和使用场景，运营再按官方价格、汇率、发票和交付方式生成正式报价。</p>
+            <div class="metrics" aria-label="价格口径">
+              <div class="metric">
+                <strong>1M</strong>
+                <span>统一按百万 Token</span>
+              </div>
+              <div class="metric">
+                <strong>6</strong>
+                <span>官方价格源</span>
+              </div>
+              <div class="metric">
+                <strong>API</strong>
+                <span>咨询登记，不在线收款</span>
+              </div>
+            </div>
           </div>
-          <div class="metrics" aria-label="服务指标">
-            <div class="metric">
-              <strong>8 类</strong>
-              <span>模型供应目录</span>
-            </div>
-            <div class="metric">
-              <strong>1h</strong>
-              <span>工作时间响应</span>
-            </div>
-            <div class="metric">
-              <strong>对公</strong>
-              <span>合同与发票支持</span>
-            </div>
+          <div class="holo" aria-label="模型路由视觉">
+            <div class="core">MODEL ROUTER</div>
           </div>
         </div>
 
         <form class="panel order-panel" id="orderForm">
-          <h2 class="panel-title">选择采购套餐</h2>
-          <div class="model-grid" aria-label="模型套餐">
-            <button class="model-option selected" type="button" data-name="国产模型体验包" data-tokens="200 万 Tokens" data-price="¥299" data-models="DeepSeek / 通义千问 / 智谱">
+          <h2 class="panel-title">选择模型</h2>
+          <div class="model-grid" aria-label="模型价格选项">
+            <button class="model-option selected" type="button" data-name="OpenAI GPT-5.5" data-provider="OpenAI" data-input="$5.00 / 1M" data-cache="$0.50 / 1M" data-output="$30.00 / 1M" data-use="旗舰通用、复杂推理、产品级智能体">
               <span class="radio" aria-hidden="true"></span>
-              <span><b>国产模型体验包</b><small>适合内容测试、客服机器人、知识库问答试跑</small></span>
-              <span class="price">¥299 起</span>
+              <span><b>OpenAI GPT-5.5</b><small>旗舰通用模型，短上下文标准价</small></span>
+              <span class="price">$5.00 / $30.00</span>
             </button>
-            <button class="model-option" type="button" data-name="全球主流模型包" data-tokens="500 万 Tokens" data-price="¥999" data-models="OpenAI / Claude / Gemini">
+            <button class="model-option" type="button" data-name="Claude Sonnet 4.6" data-provider="Anthropic" data-input="$3.00 / 1M" data-cache="$0.30 / 1M" data-output="$15.00 / 1M" data-use="代码、长任务、企业智能体">
               <span class="radio" aria-hidden="true"></span>
-              <span><b>全球主流模型包</b><small>适合产品原型、代码助手、营销素材批量生成</small></span>
-              <span class="price">¥999 起</span>
+              <span><b>Claude Sonnet 4.6</b><small>Agent 和代码场景常用，缓存命中按官方 cache read</small></span>
+              <span class="price">$3.00 / $15.00</span>
             </button>
-            <button class="model-option" type="button" data-name="企业混合调度包" data-tokens="2000 万 Tokens" data-price="¥3,999" data-models="多模型路由 / 额度池 / 月结">
+            <button class="model-option" type="button" data-name="Gemini 3.1 Pro Preview" data-provider="Google" data-input="$2.00 / 1M" data-cache="$0.20 / 1M" data-output="$12.00 / 1M" data-use="多模态、长上下文、Google 生态">
               <span class="radio" aria-hidden="true"></span>
-              <span><b>企业混合调度包</b><small>适合多部门共用、用量报表、API 网关接入</small></span>
-              <span class="price">¥3,999 起</span>
+              <span><b>Gemini 3.1 Pro Preview</b><small>≤200k prompt 标准价，输出含 thinking tokens</small></span>
+              <span class="price">$2.00 / $12.00</span>
+            </button>
+            <button class="model-option" type="button" data-name="DeepSeek V4 Pro" data-provider="DeepSeek" data-input="$0.435 / 1M" data-cache="$0.003625 / 1M" data-output="$0.87 / 1M" data-use="中文推理、代码、低成本生产流量">
+              <span class="radio" aria-hidden="true"></span>
+              <span><b>DeepSeek V4 Pro</b><small>官方 OpenAI 兼容接口，高性价比推理</small></span>
+              <span class="price">$0.435 / $0.87</span>
+            </button>
+            <button class="model-option" type="button" data-name="DeepSeek V4 Flash" data-provider="DeepSeek" data-input="$0.14 / 1M" data-cache="$0.0028 / 1M" data-output="$0.28 / 1M" data-use="高并发客服、内容生成、低成本问答">
+              <span class="radio" aria-hidden="true"></span>
+              <span><b>DeepSeek V4 Flash</b><small>低成本高并发，适合大批量中文请求</small></span>
+              <span class="price">$0.14 / $0.28</span>
+            </button>
+            <button class="model-option" type="button" data-name="Qwen3.7 Max" data-provider="Qwen Cloud" data-input="$2.50 / 1M" data-cache="按平台规则" data-output="$7.50 / 1M" data-use="中文旗舰、企业应用、复杂问答">
+              <span class="radio" aria-hidden="true"></span>
+              <span><b>Qwen3.7 Max</b><small>0-991K 输入区间官方价</small></span>
+              <span class="price">$2.50 / $7.50</span>
+            </button>
+            <button class="model-option" type="button" data-name="Qwen3.7 Plus" data-provider="Qwen Cloud" data-input="$0.40 / 1M" data-cache="按平台规则" data-output="$1.60 / 1M" data-use="企业知识库、中文客服、内容处理">
+              <span class="radio" aria-hidden="true"></span>
+              <span><b>Qwen3.7 Plus</b><small>≤256K 输入区间官方价</small></span>
+              <span class="price">$0.40 / $1.60</span>
+            </button>
+            <button class="model-option" type="button" data-name="Kimi K2.6" data-provider="Moonshot Kimi" data-input="$0.95 / 1M" data-cache="$0.16 / 1M" data-output="$4.00 / 1M" data-use="长上下文、代码 Agent、研究分析">
+              <span class="radio" aria-hidden="true"></span>
+              <span><b>Kimi K2.6</b><small>长上下文和代码任务，官方 Kimi 平台价</small></span>
+              <span class="price">$0.95 / $4.00</span>
             </button>
           </div>
 
@@ -759,15 +886,16 @@
                 <option>内容生成</option>
                 <option>代码开发</option>
                 <option>知识库问答</option>
-                <option>图片/多模态</option>
+                <option>多模态处理</option>
+                <option>企业 Agent</option>
               </select>
             </div>
             <div class="field">
               <label for="delivery">交付方式</label>
               <select id="delivery" name="delivery">
-                <option>API Key 代管额度</option>
+                <option>API Key 额度代管</option>
+                <option>统一网关转发</option>
                 <option>企业账号额度</option>
-                <option>网关统一转发</option>
                 <option>人工报价后确定</option>
               </select>
             </div>
@@ -780,6 +908,15 @@
               <input id="contact" name="contact" placeholder="手机号 / 微信 / 邮箱" required>
             </div>
             <div class="field">
+              <label for="volume">预估月用量</label>
+              <select id="volume" name="volume">
+                <option>1M - 10M Tokens</option>
+                <option>10M - 100M Tokens</option>
+                <option>100M - 1B Tokens</option>
+                <option>1B Tokens 以上</option>
+              </select>
+            </div>
+            <div class="field">
               <label for="invoice">发票需求</label>
               <select id="invoice" name="invoice">
                 <option>需要增值税普通发票</option>
@@ -787,24 +924,15 @@
                 <option>暂不需要</option>
               </select>
             </div>
-            <div class="field">
-              <label for="budget">预算范围</label>
-              <select id="budget" name="budget">
-                <option>¥300 - ¥1,000</option>
-                <option>¥1,000 - ¥5,000</option>
-                <option>¥5,000 - ¥20,000</option>
-                <option>¥20,000 以上</option>
-              </select>
-            </div>
             <div class="field full">
               <label for="note">补充说明</label>
-              <textarea id="note" name="note" placeholder="例如每日请求量、并发需求、希望使用的模型、是否需要私有化或合规白名单"></textarea>
+              <textarea id="note" name="note" placeholder="例如并发、地区、是否需要国内供应商、是否需要内容安全审核、是否需要月结"></textarea>
             </div>
           </div>
 
           <label class="check">
             <input id="agree" type="checkbox" required>
-            <span>我确认这是采购咨询登记，最终价格、可用模型、交付方式和服务条款以人工审核后的正式报价为准。</span>
+            <span>我确认这是采购咨询登记，页面价格为官方公开 API 基准价，最终成交需人工确认供应商条款、税费、汇率和服务费。</span>
           </label>
 
           <div class="actions">
@@ -818,47 +946,39 @@
         <div class="panel summary" id="summary">
           <h2 class="panel-title">咨询单摘要</h2>
           <dl class="summary-list">
-            <div class="row"><dt>套餐</dt><dd><strong id="sumPlan">国产模型体验包</strong></dd></div>
-            <div class="row"><dt>额度</dt><dd><strong id="sumTokens">200 万 Tokens</strong></dd></div>
-            <div class="row"><dt>参考价</dt><dd><strong id="sumPrice">¥299</strong></dd></div>
-            <div class="row"><dt>模型</dt><dd><strong id="sumModels">DeepSeek / 通义千问 / 智谱</strong></dd></div>
+            <div class="row"><dt>模型</dt><dd><strong id="sumPlan">OpenAI GPT-5.5</strong></dd></div>
+            <div class="row"><dt>供应商</dt><dd><strong id="sumProvider">OpenAI</strong></dd></div>
+            <div class="row"><dt>输入</dt><dd><strong id="sumInput">$5.00 / 1M</strong></dd></div>
+            <div class="row"><dt>缓存</dt><dd><strong id="sumCache">$0.50 / 1M</strong></dd></div>
+            <div class="row"><dt>输出</dt><dd><strong id="sumOutput">$30.00 / 1M</strong></dd></div>
             <div class="row"><dt>编号</dt><dd><strong id="sumOrder">待生成</strong></dd></div>
           </dl>
           <div class="notice">
-            合规提示：AI 模型额度转售和代理服务可能涉及供应商条款、数据安全、发票税务、跨境服务和内容安全要求。正式上线前请确认资质、协议和客户准入规则。
+            价格说明：海外模型以美元官方价展示，国内落地报价通常还需要加入汇率、税费、通道成本、发票、人工服务和供应商可用性确认。
           </div>
         </div>
 
         <div class="panel catalog" id="catalog">
-          <h2 class="panel-title">模型目录</h2>
+          <h2 class="panel-title">官方价格表</h2>
           <table>
             <thead>
               <tr>
-                <th>模型类别</th>
-                <th>适合场景</th>
-                <th>交付</th>
-                <th>状态</th>
+                <th>模型</th>
+                <th>输入 / 1M</th>
+                <th>缓存 / 1M</th>
+                <th>输出 / 1M</th>
+                <th>币种</th>
               </tr>
             </thead>
             <tbody id="orders">
-              <tr>
-                <td>DeepSeek / 通义 / 智谱</td>
-                <td>中文问答、文案、知识库</td>
-                <td>额度包</td>
-                <td><span class="pill local">国产优先</span></td>
-              </tr>
-              <tr>
-                <td>OpenAI / Claude / Gemini</td>
-                <td>复杂推理、代码、英文材料</td>
-                <td>报价确认</td>
-                <td><span class="pill hot">热门</span></td>
-              </tr>
-              <tr>
-                <td>多模态与图片模型</td>
-                <td>海报、商品图、视觉理解</td>
-                <td>按需</td>
-                <td><span class="pill wait">咨询</span></td>
-              </tr>
+              <tr><td>OpenAI GPT-5.5</td><td>$5.00</td><td>$0.50</td><td>$30.00</td><td><span class="pill usd">USD</span></td></tr>
+              <tr><td>Claude Sonnet 4.6</td><td>$3.00</td><td>$0.30</td><td>$15.00</td><td><span class="pill usd">USD</span></td></tr>
+              <tr><td>Gemini 3.1 Pro Preview</td><td>$2.00</td><td>$0.20</td><td>$12.00</td><td><span class="pill usd">USD</span></td></tr>
+              <tr><td>DeepSeek V4 Pro</td><td>$0.435</td><td>$0.003625</td><td>$0.87</td><td><span class="pill usd">USD</span></td></tr>
+              <tr><td>DeepSeek V4 Flash</td><td>$0.14</td><td>$0.0028</td><td>$0.28</td><td><span class="pill usd">USD</span></td></tr>
+              <tr><td>Qwen3.7 Max</td><td>$2.50</td><td>平台规则</td><td>$7.50</td><td><span class="pill usd">USD</span></td></tr>
+              <tr><td>Qwen3.7 Plus</td><td>$0.40</td><td>平台规则</td><td>$1.60</td><td><span class="pill usd">USD</span></td></tr>
+              <tr><td>Kimi K2.6</td><td>$0.95</td><td>$0.16</td><td>$4.00</td><td><span class="pill usd">USD</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -868,23 +988,23 @@
         <div class="panel flow" id="flow">
           <h2 class="panel-title">交付流程</h2>
           <ol class="steps">
-            <li><span>1</span><div><strong>提交咨询</strong>客户填写场景、预算、发票和交付方式。</div></li>
-            <li><span>2</span><div><strong>人工核验</strong>运营确认模型可用性、供应商条款和主体信息。</div></li>
-            <li><span>3</span><div><strong>正式报价</strong>输出报价单、合同、付款方式和开票信息。</div></li>
-            <li><span>4</span><div><strong>开通交付</strong>完成额度开通、网关配置或账号交接。</div></li>
+            <li><span>1</span><div><strong>选择模型</strong>客户按场景、预算和供应商偏好选择目标模型。</div></li>
+            <li><span>2</span><div><strong>核算报价</strong>运营按官方价格、汇率、税费、通道和服务要求生成报价。</div></li>
+            <li><span>3</span><div><strong>确认合规</strong>确认供应商条款、客户主体、数据安全和内容安全要求。</div></li>
+            <li><span>4</span><div><strong>开通交付</strong>完成额度开通、网关配置、用量报表或企业账号交接。</div></li>
           </ol>
         </div>
 
         <div class="panel compliance">
-          <h2 class="panel-title">上线前需要接入</h2>
-          <table>
-            <tbody>
-              <tr><td>客户管理</td><td>CRM、企业实名、联系人记录</td></tr>
-              <tr><td>支付与发票</td><td>对公收款、订单核销、电子发票</td></tr>
-              <tr><td>供应商条款</td><td>不同模型的代理、转售、地区和使用限制</td></tr>
-              <tr><td>内容安全</td><td>敏感内容审核、调用日志、滥用告警</td></tr>
-            </tbody>
-          </table>
+          <h2 class="panel-title">价格来源</h2>
+          <ul class="source-list">
+            <li><a href="https://developers.openai.com/api/docs/pricing" target="_blank" rel="noreferrer">OpenAI API Pricing</a></li>
+            <li><a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank" rel="noreferrer">Anthropic Claude API Pricing</a></li>
+            <li><a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noreferrer">Google Gemini API Pricing</a></li>
+            <li><a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noreferrer">DeepSeek Models & Pricing</a></li>
+            <li><a href="https://docs.qwencloud.com/developer-guides/getting-started/pricing" target="_blank" rel="noreferrer">Qwen Cloud Pricing</a></li>
+            <li><a href="https://platform.kimi.ai/" target="_blank" rel="noreferrer">Kimi API Platform</a></li>
+          </ul>
         </div>
       </section>
     </main>
@@ -903,9 +1023,10 @@
     const toast = document.querySelector("#toast");
     const summary = {
       plan: document.querySelector("#sumPlan"),
-      tokens: document.querySelector("#sumTokens"),
-      price: document.querySelector("#sumPrice"),
-      models: document.querySelector("#sumModels"),
+      provider: document.querySelector("#sumProvider"),
+      input: document.querySelector("#sumInput"),
+      cache: document.querySelector("#sumCache"),
+      output: document.querySelector("#sumOutput"),
       order: document.querySelector("#sumOrder")
     };
 
@@ -913,9 +1034,10 @@
 
     function updateSummary() {
       summary.plan.textContent = selected.dataset.name;
-      summary.tokens.textContent = selected.dataset.tokens;
-      summary.price.textContent = selected.dataset.price;
-      summary.models.textContent = selected.dataset.models;
+      summary.provider.textContent = selected.dataset.provider;
+      summary.input.textContent = selected.dataset.input;
+      summary.cache.textContent = selected.dataset.cache;
+      summary.output.textContent = selected.dataset.output;
     }
 
     function showToast(message) {
@@ -948,8 +1070,9 @@
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${selected.dataset.name}</td>
-        <td>${company.value.trim()}</td>
-        <td>${selected.dataset.price}</td>
+        <td>${selected.dataset.input}</td>
+        <td>${selected.dataset.cache}</td>
+        <td>${selected.dataset.output}</td>
         <td><span class="pill wait">待跟进</span></td>
       `;
       orders.prepend(row);
