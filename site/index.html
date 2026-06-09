@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>智算令牌集市 | AI 大模型 Token 采购</title>
+  <meta name="description" content="面向中国客户的 AI 大模型 Token 采购预登记页面，支持主流模型套餐咨询、发票信息登记和企业审核。">
+  <style>
+    :root {
+      --bg: oklch(1 0 0);
+      --surface: oklch(0.972 0.003 230);
+      --surface-2: oklch(0.94 0.008 230);
+      --ink: oklch(0.17 0.018 230);
+      --muted: oklch(0.42 0.022 230);
+      --line: oklch(0.87 0.01 230);
+      --primary: oklch(0.56 0.17 36);
+      --primary-strong: oklch(0.48 0.16 36);
+      --accent: oklch(0.34 0.13 218);
+      --accent-soft: oklch(0.93 0.035 218);
+      --success: oklch(0.48 0.13 154);
+      --warning: oklch(0.68 0.16 78);
+      --danger: oklch(0.55 0.18 28);
+      --shadow: 0 18px 48px oklch(0.18 0.03 230 / 0.13);
+      --radius: 8px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 88% 4%, oklch(0.88 0.08 36 / 0.36), transparent 28rem),
+        linear-gradient(180deg, var(--bg), oklch(0.985 0.004 230));
+      color: var(--ink);
+      font-family: var(--font);
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 264px minmax(0, 1fr);
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+      background: oklch(0.99 0 0 / 0.86);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .mark {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      box-shadow: 0 12px 24px oklch(0.45 0.14 36 / 0.22);
+    }
+
+    nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    nav a {
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 180ms ease, color 180ms ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .side-box {
+      margin-top: auto;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .side-box strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    main {
+      padding: 28px;
+      display: grid;
+      gap: 22px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .topbar strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .topbar span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid oklch(0.82 0.04 154);
+      border-radius: 999px;
+      background: oklch(0.96 0.035 154);
+      color: oklch(0.32 0.11 154);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--success);
+      box-shadow: 0 0 0 4px oklch(0.6 0.13 154 / 0.16);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: oklch(1 0 0 / 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-copy {
+      min-height: 370px;
+      padding: 30px;
+      display: grid;
+      align-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-copy::after {
+      content: "";
+      position: absolute;
+      right: -110px;
+      bottom: -120px;
+      width: 310px;
+      height: 310px;
+      border-radius: 50%;
+      background: conic-gradient(from 150deg, var(--primary), var(--accent), oklch(0.7 0.16 78), var(--primary));
+      opacity: 0.14;
+      filter: blur(8px);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 13ch;
+      margin-bottom: 18px;
+      font-size: 48px;
+      line-height: 1.05;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .lead {
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: 16px;
+      text-wrap: pretty;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .metric {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .order-panel {
+      padding: 22px;
+    }
+
+    .panel-title {
+      margin-bottom: 16px;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .model-grid {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .model-option {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--bg);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .model-option:hover {
+      border-color: oklch(0.75 0.06 36);
+      transform: translateY(-1px);
+    }
+
+    .model-option.selected {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px oklch(0.56 0.17 36 / 0.14);
+    }
+
+    .radio {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--line);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+
+    .selected .radio {
+      border-color: var(--primary);
+    }
+
+    .selected .radio::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--primary);
+    }
+
+    .model-option b {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .model-option small {
+      color: var(--muted);
+    }
+
+    .price {
+      color: var(--accent);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--bg);
+      color: var(--ink);
+      outline: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    textarea {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px oklch(0.56 0.17 36 / 0.14);
+    }
+
+    .check {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      margin: 14px 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .check input {
+      width: 17px;
+      height: 17px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: 11px 14px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      font-weight: 760;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-strong);
+    }
+
+    .btn-secondary {
+      border-color: var(--line);
+      background: var(--surface);
+      color: var(--ink);
+    }
+
+    .below {
+      display: grid;
+      grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.1fr);
+      gap: 22px;
+    }
+
+    .summary,
+    .catalog,
+    .flow,
+    .compliance {
+      padding: 20px;
+    }
+
+    .summary-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .row:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .row strong {
+      color: var(--ink);
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .notice {
+      margin-top: 16px;
+      padding: 13px;
+      border: 1px solid oklch(0.82 0.09 78);
+      border-radius: var(--radius);
+      background: oklch(0.96 0.04 78);
+      color: oklch(0.34 0.08 78);
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 760;
+      white-space: nowrap;
+    }
+
+    .pill.hot {
+      background: var(--primary);
+      color: white;
+    }
+
+    .pill.local {
+      background: var(--accent);
+      color: white;
+    }
+
+    .pill.wait {
+      background: oklch(0.93 0.05 78);
+      color: oklch(0.35 0.08 78);
+    }
+
+    .sections {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: var(--muted);
+    }
+
+    .steps span {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .steps strong {
+      display: block;
+      color: var(--ink);
+    }
+
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      max-width: 360px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: white;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+      z-index: 10;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1040px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      nav {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .side-box {
+        margin-top: 0;
+      }
+
+      .hero,
+      .below,
+      .sections {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      main,
+      aside {
+        padding: 16px;
+      }
+
+      nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero-copy {
+        min-height: auto;
+        padding: 22px;
+        gap: 24px;
+      }
+
+      h1 {
+        max-width: 11ch;
+        font-size: 34px;
+      }
+
+      .metrics,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .model-option {
+        grid-template-columns: 22px minmax(0, 1fr);
+      }
+
+      .price {
+        grid-column: 2;
+      }
+
+      th:nth-child(3),
+      td:nth-child(3) {
+        display: none;
+      }
+
+      .toast {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand">
+        <div class="mark">AI</div>
+        <span>智算令牌集市</span>
+      </div>
+      <nav aria-label="主导航">
+        <a class="active" href="#order">采购登记</a>
+        <a href="#summary">订单摘要</a>
+        <a href="#catalog">模型目录</a>
+        <a href="#flow">交付流程</a>
+      </nav>
+      <div class="side-box">
+        <strong>企业采购预登记</strong>
+        页面只收集需求和联系方式，不在线收款、不自动开通模型、不存储 API Key。正式交易需合同、发票、实名主体和合规审核。
+      </div>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div>
+          <strong>面向中国客户的 AI 大模型 Token 采购入口</strong>
+          <span>用于展示套餐、收集询价、生成待跟进线索，后续可接 CRM、支付和后台审核。</span>
+        </div>
+        <div class="badge"><span class="dot"></span>静态演示版</div>
+      </div>
+
+      <section class="hero" id="order">
+        <div class="panel hero-copy">
+          <div>
+            <h1>一站式登记大模型 Token 需求</h1>
+            <p class="lead">为团队、工作室和中小企业提供多模型额度采购咨询：OpenAI、Claude、Gemini、DeepSeek、通义千问、智谱、月之暗面等。先把客户需求、发票主体和交付偏好收齐，再交给运营人工确认。</p>
+          </div>
+          <div class="metrics" aria-label="服务指标">
+            <div class="metric">
+              <strong>8 类</strong>
+              <span>模型供应目录</span>
+            </div>
+            <div class="metric">
+              <strong>1h</strong>
+              <span>工作时间响应</span>
+            </div>
+            <div class="metric">
+              <strong>对公</strong>
+              <span>合同与发票支持</span>
+            </div>
+          </div>
+        </div>
+
+        <form class="panel order-panel" id="orderForm">
+          <h2 class="panel-title">选择采购套餐</h2>
+          <div class="model-grid" aria-label="模型套餐">
+            <button class="model-option selected" type="button" data-name="国产模型体验包" data-tokens="200 万 Tokens" data-price="¥299" data-models="DeepSeek / 通义千问 / 智谱">
+              <span class="radio" aria-hidden="true"></span>
+              <span><b>国产模型体验包</b><small>适合内容测试、客服机器人、知识库问答试跑</small></span>
+              <span class="price">¥299 起</span>
+            </button>
+            <button class="model-option" type="button" data-name="全球主流模型包" data-tokens="500 万 Tokens" data-price="¥999" data-models="OpenAI / Claude / Gemini">
+              <span class="radio" aria-hidden="true"></span>
+              <span><b>全球主流模型包</b><small>适合产品原型、代码助手、营销素材批量生成</small></span>
+              <span class="price">¥999 起</span>
+            </button>
+            <button class="model-option" type="button" data-name="企业混合调度包" data-tokens="2000 万 Tokens" data-price="¥3,999" data-models="多模型路由 / 额度池 / 月结">
+              <span class="radio" aria-hidden="true"></span>
+              <span><b>企业混合调度包</b><small>适合多部门共用、用量报表、API 网关接入</small></span>
+              <span class="price">¥3,999 起</span>
+            </button>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="scenario">主要场景</label>
+              <select id="scenario" name="scenario">
+                <option>智能客服</option>
+                <option>内容生成</option>
+                <option>代码开发</option>
+                <option>知识库问答</option>
+                <option>图片/多模态</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="delivery">交付方式</label>
+              <select id="delivery" name="delivery">
+                <option>API Key 代管额度</option>
+                <option>企业账号额度</option>
+                <option>网关统一转发</option>
+                <option>人工报价后确定</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="company">公司或团队名称</label>
+              <input id="company" name="company" placeholder="例如 上海某某科技有限公司" required>
+            </div>
+            <div class="field">
+              <label for="contact">联系方式</label>
+              <input id="contact" name="contact" placeholder="手机号 / 微信 / 邮箱" required>
+            </div>
+            <div class="field">
+              <label for="invoice">发票需求</label>
+              <select id="invoice" name="invoice">
+                <option>需要增值税普通发票</option>
+                <option>需要增值税专用发票</option>
+                <option>暂不需要</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="budget">预算范围</label>
+              <select id="budget" name="budget">
+                <option>¥300 - ¥1,000</option>
+                <option>¥1,000 - ¥5,000</option>
+                <option>¥5,000 - ¥20,000</option>
+                <option>¥20,000 以上</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="note">补充说明</label>
+              <textarea id="note" name="note" placeholder="例如每日请求量、并发需求、希望使用的模型、是否需要私有化或合规白名单"></textarea>
+            </div>
+          </div>
+
+          <label class="check">
+            <input id="agree" type="checkbox" required>
+            <span>我确认这是采购咨询登记，最终价格、可用模型、交付方式和服务条款以人工审核后的正式报价为准。</span>
+          </label>
+
+          <div class="actions">
+            <button class="btn btn-primary" type="submit">生成咨询单</button>
+            <button class="btn btn-secondary" type="button" id="resetBtn">清空表单</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="below">
+        <div class="panel summary" id="summary">
+          <h2 class="panel-title">咨询单摘要</h2>
+          <dl class="summary-list">
+            <div class="row"><dt>套餐</dt><dd><strong id="sumPlan">国产模型体验包</strong></dd></div>
+            <div class="row"><dt>额度</dt><dd><strong id="sumTokens">200 万 Tokens</strong></dd></div>
+            <div class="row"><dt>参考价</dt><dd><strong id="sumPrice">¥299</strong></dd></div>
+            <div class="row"><dt>模型</dt><dd><strong id="sumModels">DeepSeek / 通义千问 / 智谱</strong></dd></div>
+            <div class="row"><dt>编号</dt><dd><strong id="sumOrder">待生成</strong></dd></div>
+          </dl>
+          <div class="notice">
+            合规提示：AI 模型额度转售和代理服务可能涉及供应商条款、数据安全、发票税务、跨境服务和内容安全要求。正式上线前请确认资质、协议和客户准入规则。
+          </div>
+        </div>
+
+        <div class="panel catalog" id="catalog">
+          <h2 class="panel-title">模型目录</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>模型类别</th>
+                <th>适合场景</th>
+                <th>交付</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody id="orders">
+              <tr>
+                <td>DeepSeek / 通义 / 智谱</td>
+                <td>中文问答、文案、知识库</td>
+                <td>额度包</td>
+                <td><span class="pill local">国产优先</span></td>
+              </tr>
+              <tr>
+                <td>OpenAI / Claude / Gemini</td>
+                <td>复杂推理、代码、英文材料</td>
+                <td>报价确认</td>
+                <td><span class="pill hot">热门</span></td>
+              </tr>
+              <tr>
+                <td>多模态与图片模型</td>
+                <td>海报、商品图、视觉理解</td>
+                <td>按需</td>
+                <td><span class="pill wait">咨询</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="sections">
+        <div class="panel flow" id="flow">
+          <h2 class="panel-title">交付流程</h2>
+          <ol class="steps">
+            <li><span>1</span><div><strong>提交咨询</strong>客户填写场景、预算、发票和交付方式。</div></li>
+            <li><span>2</span><div><strong>人工核验</strong>运营确认模型可用性、供应商条款和主体信息。</div></li>
+            <li><span>3</span><div><strong>正式报价</strong>输出报价单、合同、付款方式和开票信息。</div></li>
+            <li><span>4</span><div><strong>开通交付</strong>完成额度开通、网关配置或账号交接。</div></li>
+          </ol>
+        </div>
+
+        <div class="panel compliance">
+          <h2 class="panel-title">上线前需要接入</h2>
+          <table>
+            <tbody>
+              <tr><td>客户管理</td><td>CRM、企业实名、联系人记录</td></tr>
+              <tr><td>支付与发票</td><td>对公收款、订单核销、电子发票</td></tr>
+              <tr><td>供应商条款</td><td>不同模型的代理、转售、地区和使用限制</td></tr>
+              <tr><td>内容安全</td><td>敏感内容审核、调用日志、滥用告警</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const options = document.querySelectorAll(".model-option");
+    const form = document.querySelector("#orderForm");
+    const resetBtn = document.querySelector("#resetBtn");
+    const company = document.querySelector("#company");
+    const contact = document.querySelector("#contact");
+    const agree = document.querySelector("#agree");
+    const orders = document.querySelector("#orders");
+    const toast = document.querySelector("#toast");
+    const summary = {
+      plan: document.querySelector("#sumPlan"),
+      tokens: document.querySelector("#sumTokens"),
+      price: document.querySelector("#sumPrice"),
+      models: document.querySelector("#sumModels"),
+      order: document.querySelector("#sumOrder")
+    };
+
+    let selected = document.querySelector(".model-option.selected");
+
+    function updateSummary() {
+      summary.plan.textContent = selected.dataset.name;
+      summary.tokens.textContent = selected.dataset.tokens;
+      summary.price.textContent = selected.dataset.price;
+      summary.models.textContent = selected.dataset.models;
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+
+    options.forEach((option) => {
+      option.addEventListener("click", () => {
+        selected.classList.remove("selected");
+        option.classList.add("selected");
+        selected = option;
+        updateSummary();
+      });
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      if (!company.value.trim() || !contact.value.trim() || !agree.checked) {
+        showToast("请填写公司名称、联系方式，并确认咨询说明。");
+        return;
+      }
+
+      const orderId = `AI-${Math.floor(100000 + Math.random() * 899999)}`;
+      summary.order.textContent = orderId;
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${selected.dataset.name}</td>
+        <td>${company.value.trim()}</td>
+        <td>${selected.dataset.price}</td>
+        <td><span class="pill wait">待跟进</span></td>
+      `;
+      orders.prepend(row);
+      showToast(`咨询单 ${orderId} 已生成，运营可按联系方式继续跟进。`);
+    });
+
+    resetBtn.addEventListener("click", () => {
+      form.reset();
+      selected.classList.remove("selected");
+      selected = options[0];
+      selected.classList.add("selected");
+      summary.order.textContent = "待生成";
+      updateSummary();
+      showToast("表单已清空。");
+    });
+
+    updateSummary();
+  </script>
+</body>
+</html>
