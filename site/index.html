@@ -260,56 +260,180 @@
     }
 
     .holo {
-      min-height: 300px;
+      min-height: 330px;
       border: 1px solid oklch(0.78 0.15 210 / 0.38);
       border-radius: var(--radius);
       background:
+        radial-gradient(circle at 50% 22%, oklch(0.78 0.15 210 / 0.2), transparent 9rem),
         linear-gradient(180deg, oklch(0.78 0.15 210 / 0.1), transparent),
         repeating-linear-gradient(90deg, transparent 0 14px, oklch(0.78 0.15 210 / 0.12) 14px 15px),
         oklch(0.1 0.02 238 / 0.72);
       display: grid;
-      place-items: center;
+      grid-template-rows: 1fr auto;
+      gap: 10px;
+      padding: 18px;
       overflow: hidden;
+      perspective: 900px;
     }
 
-    .core {
-      width: 190px;
-      aspect-ratio: 1;
-      border: 1px solid oklch(0.78 0.15 210 / 0.7);
-      border-radius: 50%;
+    .model-stage {
+      position: relative;
+      min-height: 245px;
       display: grid;
       place-items: center;
-      position: relative;
-      color: var(--cyan);
-      font-family: var(--mono);
-      font-size: 13px;
-      box-shadow: inset 0 0 34px oklch(0.78 0.15 210 / 0.14), 0 0 44px oklch(0.78 0.15 210 / 0.18);
-      animation: pulse 3.4s ease-in-out infinite;
+      transform-style: preserve-3d;
     }
 
-    .core::before,
-    .core::after {
-      content: "";
+    .model-card {
+      --model-color: var(--cyan);
       position: absolute;
-      border: 1px solid oklch(0.78 0.15 210 / 0.38);
-      border-radius: 50%;
-      inset: 24px;
-      transform: rotateX(68deg) rotateZ(15deg);
+      width: min(240px, 100%);
+      min-height: 224px;
+      padding: 14px;
+      border: 1px solid oklch(0.78 0.15 210 / 0.22);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, color-mix(in oklch, var(--model-color) 16%, transparent), transparent),
+        oklch(0.095 0.016 240 / 0.94);
+      color: var(--ink);
+      box-shadow: 0 24px 60px oklch(0 0 0 / 0.38), 0 0 36px color-mix(in oklch, var(--model-color) 22%, transparent);
+      transform: rotateY(42deg) rotateX(8deg) translateX(54px) scale(0.72);
+      opacity: 0;
+      filter: blur(2px);
+      transition: transform 420ms cubic-bezier(.2,.8,.2,1), opacity 260ms ease, filter 260ms ease;
+      pointer-events: none;
     }
 
-    .core::after {
-      inset: 46px;
-      border-color: oklch(0.78 0.16 72 / 0.5);
-      transform: rotateX(66deg) rotateZ(-38deg);
+    .model-card.active {
+      opacity: 1;
+      filter: blur(0);
+      transform: rotateY(-14deg) rotateX(7deg) translateY(-4px) scale(1);
+      animation: floatCard 4.2s ease-in-out infinite;
     }
 
-    @keyframes pulse {
+    .model-card.next {
+      opacity: 0.45;
+      filter: blur(0.6px);
+      transform: rotateY(28deg) rotateX(8deg) translateX(42px) translateZ(-86px) scale(0.78);
+    }
+
+    .model-card.prev {
+      opacity: 0.28;
+      filter: blur(1px);
+      transform: rotateY(-36deg) rotateX(8deg) translateX(-42px) translateZ(-110px) scale(0.72);
+    }
+
+    @keyframes floatCard {
       0%, 100% {
-        transform: translateY(0);
+        translate: 0 0;
       }
       50% {
-        transform: translateY(-6px);
+        translate: 0 -7px;
       }
+    }
+
+    .model-card header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid oklch(1 0 0 / 0.1);
+    }
+
+    .model-emblem {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: color-mix(in oklch, var(--model-color) 82%, white 8%);
+      color: oklch(0.08 0 0);
+      font-family: var(--mono);
+      font-weight: 900;
+      box-shadow: 0 0 24px color-mix(in oklch, var(--model-color) 36%, transparent);
+    }
+
+    .model-brand {
+      text-align: right;
+    }
+
+    .model-brand strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .model-brand span {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .window-bars {
+      display: grid;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .window-bars span {
+      height: 8px;
+      border-radius: 999px;
+      background: oklch(1 0 0 / 0.1);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .window-bars span::after {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: var(--w, 64%);
+      border-radius: inherit;
+      background: var(--model-color);
+      box-shadow: 0 0 16px color-mix(in oklch, var(--model-color) 36%, transparent);
+    }
+
+    .terminal-lines {
+      display: grid;
+      gap: 7px;
+      padding: 11px;
+      border: 1px solid oklch(1 0 0 / 0.1);
+      border-radius: var(--radius);
+      background: oklch(0.07 0.012 240 / 0.78);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .terminal-lines span {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .terminal-lines b {
+      color: var(--model-color);
+      font-weight: 800;
+    }
+
+    .model-strip {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .model-dot {
+      height: 4px;
+      border: 0;
+      border-radius: 999px;
+      background: oklch(1 0 0 / 0.16);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .model-dot.active {
+      background: var(--cyan);
+      box-shadow: 0 0 14px var(--cyan);
     }
 
     .metrics {
@@ -828,50 +952,101 @@
               </div>
             </div>
           </div>
-          <div class="holo" aria-label="模型路由视觉">
-            <div class="core">MODEL ROUTER</div>
+          <div class="holo" aria-label="模型软件外观预览">
+            <div class="model-stage" id="modelStage">
+              <article class="model-card active" data-card="0" style="--model-color: var(--cyan);">
+                <header><div class="model-emblem">O</div><div class="model-brand"><strong>OpenAI</strong><span>GPT-5.5 CONSOLE</span></div></header>
+                <div class="window-bars"><span style="--w: 84%"></span><span style="--w: 58%"></span><span style="--w: 71%"></span></div>
+                <div class="terminal-lines"><span>input <b>$5.00</b></span><span>cache <b>$0.50</b></span><span>output <b>$30.00</b></span><span>route <b>flagship</b></span></div>
+              </article>
+              <article class="model-card next" data-card="1" style="--model-color: var(--magenta);">
+                <header><div class="model-emblem">C</div><div class="model-brand"><strong>Claude</strong><span>SONNET AGENT UI</span></div></header>
+                <div class="window-bars"><span style="--w: 72%"></span><span style="--w: 88%"></span><span style="--w: 52%"></span></div>
+                <div class="terminal-lines"><span>input <b>$3.00</b></span><span>cache <b>$0.30</b></span><span>output <b>$15.00</b></span><span>route <b>coding</b></span></div>
+              </article>
+              <article class="model-card prev" data-card="2" style="--model-color: var(--blue);">
+                <header><div class="model-emblem">G</div><div class="model-brand"><strong>Gemini</strong><span>MULTIMODAL DECK</span></div></header>
+                <div class="window-bars"><span style="--w: 68%"></span><span style="--w: 94%"></span><span style="--w: 63%"></span></div>
+                <div class="terminal-lines"><span>input <b>$2.00</b></span><span>cache <b>$0.20</b></span><span>output <b>$12.00</b></span><span>route <b>vision</b></span></div>
+              </article>
+              <article class="model-card" data-card="3" style="--model-color: var(--green);">
+                <header><div class="model-emblem">D</div><div class="model-brand"><strong>DeepSeek</strong><span>V4 PRO NODE</span></div></header>
+                <div class="window-bars"><span style="--w: 91%"></span><span style="--w: 47%"></span><span style="--w: 78%"></span></div>
+                <div class="terminal-lines"><span>input <b>$0.435</b></span><span>cache <b>$0.003625</b></span><span>output <b>$0.87</b></span><span>route <b>value</b></span></div>
+              </article>
+              <article class="model-card" data-card="4" style="--model-color: var(--green);">
+                <header><div class="model-emblem">F</div><div class="model-brand"><strong>DeepSeek</strong><span>V4 FLASH EDGE</span></div></header>
+                <div class="window-bars"><span style="--w: 96%"></span><span style="--w: 74%"></span><span style="--w: 42%"></span></div>
+                <div class="terminal-lines"><span>input <b>$0.14</b></span><span>cache <b>$0.0028</b></span><span>output <b>$0.28</b></span><span>route <b>bulk</b></span></div>
+              </article>
+              <article class="model-card" data-card="5" style="--model-color: var(--amber);">
+                <header><div class="model-emblem">Q</div><div class="model-brand"><strong>Qwen</strong><span>MAX ENTERPRISE</span></div></header>
+                <div class="window-bars"><span style="--w: 64%"></span><span style="--w: 81%"></span><span style="--w: 55%"></span></div>
+                <div class="terminal-lines"><span>input <b>$2.50</b></span><span>cache <b>rules</b></span><span>output <b>$7.50</b></span><span>route <b>cn</b></span></div>
+              </article>
+              <article class="model-card" data-card="6" style="--model-color: var(--amber);">
+                <header><div class="model-emblem">Q+</div><div class="model-brand"><strong>Qwen</strong><span>PLUS SERVICE</span></div></header>
+                <div class="window-bars"><span style="--w: 76%"></span><span style="--w: 68%"></span><span style="--w: 86%"></span></div>
+                <div class="terminal-lines"><span>input <b>$0.40</b></span><span>cache <b>rules</b></span><span>output <b>$1.60</b></span><span>route <b>support</b></span></div>
+              </article>
+              <article class="model-card" data-card="7" style="--model-color: var(--magenta);">
+                <header><div class="model-emblem">K</div><div class="model-brand"><strong>Kimi</strong><span>K2.6 LONG CORE</span></div></header>
+                <div class="window-bars"><span style="--w: 89%"></span><span style="--w: 61%"></span><span style="--w: 93%"></span></div>
+                <div class="terminal-lines"><span>input <b>$0.95</b></span><span>cache <b>$0.16</b></span><span>output <b>$4.00</b></span><span>route <b>longctx</b></span></div>
+              </article>
+            </div>
+            <div class="model-strip" id="modelStrip" aria-label="模型预览选择">
+              <button class="model-dot active" type="button" data-target="0" aria-label="预览 OpenAI"></button>
+              <button class="model-dot" type="button" data-target="1" aria-label="预览 Claude"></button>
+              <button class="model-dot" type="button" data-target="2" aria-label="预览 Gemini"></button>
+              <button class="model-dot" type="button" data-target="3" aria-label="预览 DeepSeek Pro"></button>
+              <button class="model-dot" type="button" data-target="4" aria-label="预览 DeepSeek Flash"></button>
+              <button class="model-dot" type="button" data-target="5" aria-label="预览 Qwen Max"></button>
+              <button class="model-dot" type="button" data-target="6" aria-label="预览 Qwen Plus"></button>
+              <button class="model-dot" type="button" data-target="7" aria-label="预览 Kimi"></button>
+            </div>
           </div>
         </div>
 
         <form class="panel order-panel" id="orderForm">
           <h2 class="panel-title">选择模型</h2>
           <div class="model-grid" aria-label="模型价格选项">
-            <button class="model-option selected" type="button" data-name="OpenAI GPT-5.5" data-provider="OpenAI" data-input="$5.00 / 1M" data-cache="$0.50 / 1M" data-output="$30.00 / 1M" data-use="旗舰通用、复杂推理、产品级智能体">
+            <button class="model-option selected" type="button" data-card="0" data-name="OpenAI GPT-5.5" data-provider="OpenAI" data-input="$5.00 / 1M" data-cache="$0.50 / 1M" data-output="$30.00 / 1M" data-use="旗舰通用、复杂推理、产品级智能体">
               <span class="radio" aria-hidden="true"></span>
               <span><b>OpenAI GPT-5.5</b><small>旗舰通用模型，短上下文标准价</small></span>
               <span class="price">$5.00 / $30.00</span>
             </button>
-            <button class="model-option" type="button" data-name="Claude Sonnet 4.6" data-provider="Anthropic" data-input="$3.00 / 1M" data-cache="$0.30 / 1M" data-output="$15.00 / 1M" data-use="代码、长任务、企业智能体">
+            <button class="model-option" type="button" data-card="1" data-name="Claude Sonnet 4.6" data-provider="Anthropic" data-input="$3.00 / 1M" data-cache="$0.30 / 1M" data-output="$15.00 / 1M" data-use="代码、长任务、企业智能体">
               <span class="radio" aria-hidden="true"></span>
               <span><b>Claude Sonnet 4.6</b><small>Agent 和代码场景常用，缓存命中按官方 cache read</small></span>
               <span class="price">$3.00 / $15.00</span>
             </button>
-            <button class="model-option" type="button" data-name="Gemini 3.1 Pro Preview" data-provider="Google" data-input="$2.00 / 1M" data-cache="$0.20 / 1M" data-output="$12.00 / 1M" data-use="多模态、长上下文、Google 生态">
+            <button class="model-option" type="button" data-card="2" data-name="Gemini 3.1 Pro Preview" data-provider="Google" data-input="$2.00 / 1M" data-cache="$0.20 / 1M" data-output="$12.00 / 1M" data-use="多模态、长上下文、Google 生态">
               <span class="radio" aria-hidden="true"></span>
               <span><b>Gemini 3.1 Pro Preview</b><small>≤200k prompt 标准价，输出含 thinking tokens</small></span>
               <span class="price">$2.00 / $12.00</span>
             </button>
-            <button class="model-option" type="button" data-name="DeepSeek V4 Pro" data-provider="DeepSeek" data-input="$0.435 / 1M" data-cache="$0.003625 / 1M" data-output="$0.87 / 1M" data-use="中文推理、代码、低成本生产流量">
+            <button class="model-option" type="button" data-card="3" data-name="DeepSeek V4 Pro" data-provider="DeepSeek" data-input="$0.435 / 1M" data-cache="$0.003625 / 1M" data-output="$0.87 / 1M" data-use="中文推理、代码、低成本生产流量">
               <span class="radio" aria-hidden="true"></span>
               <span><b>DeepSeek V4 Pro</b><small>官方 OpenAI 兼容接口，高性价比推理</small></span>
               <span class="price">$0.435 / $0.87</span>
             </button>
-            <button class="model-option" type="button" data-name="DeepSeek V4 Flash" data-provider="DeepSeek" data-input="$0.14 / 1M" data-cache="$0.0028 / 1M" data-output="$0.28 / 1M" data-use="高并发客服、内容生成、低成本问答">
+            <button class="model-option" type="button" data-card="4" data-name="DeepSeek V4 Flash" data-provider="DeepSeek" data-input="$0.14 / 1M" data-cache="$0.0028 / 1M" data-output="$0.28 / 1M" data-use="高并发客服、内容生成、低成本问答">
               <span class="radio" aria-hidden="true"></span>
               <span><b>DeepSeek V4 Flash</b><small>低成本高并发，适合大批量中文请求</small></span>
               <span class="price">$0.14 / $0.28</span>
             </button>
-            <button class="model-option" type="button" data-name="Qwen3.7 Max" data-provider="Qwen Cloud" data-input="$2.50 / 1M" data-cache="按平台规则" data-output="$7.50 / 1M" data-use="中文旗舰、企业应用、复杂问答">
+            <button class="model-option" type="button" data-card="5" data-name="Qwen3.7 Max" data-provider="Qwen Cloud" data-input="$2.50 / 1M" data-cache="按平台规则" data-output="$7.50 / 1M" data-use="中文旗舰、企业应用、复杂问答">
               <span class="radio" aria-hidden="true"></span>
               <span><b>Qwen3.7 Max</b><small>0-991K 输入区间官方价</small></span>
               <span class="price">$2.50 / $7.50</span>
             </button>
-            <button class="model-option" type="button" data-name="Qwen3.7 Plus" data-provider="Qwen Cloud" data-input="$0.40 / 1M" data-cache="按平台规则" data-output="$1.60 / 1M" data-use="企业知识库、中文客服、内容处理">
+            <button class="model-option" type="button" data-card="6" data-name="Qwen3.7 Plus" data-provider="Qwen Cloud" data-input="$0.40 / 1M" data-cache="按平台规则" data-output="$1.60 / 1M" data-use="企业知识库、中文客服、内容处理">
               <span class="radio" aria-hidden="true"></span>
               <span><b>Qwen3.7 Plus</b><small>≤256K 输入区间官方价</small></span>
               <span class="price">$0.40 / $1.60</span>
             </button>
-            <button class="model-option" type="button" data-name="Kimi K2.6" data-provider="Moonshot Kimi" data-input="$0.95 / 1M" data-cache="$0.16 / 1M" data-output="$4.00 / 1M" data-use="长上下文、代码 Agent、研究分析">
+            <button class="model-option" type="button" data-card="7" data-name="Kimi K2.6" data-provider="Moonshot Kimi" data-input="$0.95 / 1M" data-cache="$0.16 / 1M" data-output="$4.00 / 1M" data-use="长上下文、代码 Agent、研究分析">
               <span class="radio" aria-hidden="true"></span>
               <span><b>Kimi K2.6</b><small>长上下文和代码任务，官方 Kimi 平台价</small></span>
               <span class="price">$0.95 / $4.00</span>
@@ -1021,6 +1196,8 @@
     const agree = document.querySelector("#agree");
     const orders = document.querySelector("#orders");
     const toast = document.querySelector("#toast");
+    const modelCards = document.querySelectorAll(".model-card");
+    const modelDots = document.querySelectorAll(".model-dot");
     const summary = {
       plan: document.querySelector("#sumPlan"),
       provider: document.querySelector("#sumProvider"),
@@ -1031,6 +1208,31 @@
     };
 
     let selected = document.querySelector(".model-option.selected");
+
+    function syncModelVisual(cardIndex) {
+      const total = modelCards.length;
+      const activeIndex = Number(cardIndex);
+      const prevIndex = (activeIndex - 1 + total) % total;
+      const nextIndex = (activeIndex + 1) % total;
+
+      modelCards.forEach((card, index) => {
+        card.classList.toggle("active", index === activeIndex);
+        card.classList.toggle("prev", index === prevIndex);
+        card.classList.toggle("next", index === nextIndex);
+      });
+
+      modelDots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === activeIndex);
+      });
+    }
+
+    function selectModel(option) {
+      selected.classList.remove("selected");
+      option.classList.add("selected");
+      selected = option;
+      updateSummary();
+      syncModelVisual(selected.dataset.card);
+    }
 
     function updateSummary() {
       summary.plan.textContent = selected.dataset.name;
@@ -1049,10 +1251,14 @@
 
     options.forEach((option) => {
       option.addEventListener("click", () => {
-        selected.classList.remove("selected");
-        option.classList.add("selected");
-        selected = option;
-        updateSummary();
+        selectModel(option);
+      });
+    });
+
+    modelDots.forEach((dot) => {
+      dot.addEventListener("click", () => {
+        const option = document.querySelector(`.model-option[data-card="${dot.dataset.target}"]`);
+        selectModel(option);
       });
     });
 
@@ -1081,15 +1287,13 @@
 
     resetBtn.addEventListener("click", () => {
       form.reset();
-      selected.classList.remove("selected");
-      selected = options[0];
-      selected.classList.add("selected");
+      selectModel(options[0]);
       summary.order.textContent = "待生成";
-      updateSummary();
       showToast("表单已清空。");
     });
 
     updateSummary();
+    syncModelVisual(selected.dataset.card);
   </script>
 </body>
 </html>
