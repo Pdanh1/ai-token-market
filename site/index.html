@@ -37,6 +37,9 @@
       margin: 0;
       min-height: 100vh;
       background:
+        radial-gradient(circle at 82% 0%, oklch(0.68 0.2 338 / 0.22), transparent 24rem),
+        radial-gradient(circle at 18% 12%, oklch(0.78 0.15 210 / 0.28), transparent 28rem),
+        linear-gradient(135deg, oklch(0.58 0.19 255 / 0.18), transparent 34%),
         linear-gradient(90deg, oklch(1 0 0 / 0.035) 1px, transparent 1px),
         linear-gradient(0deg, oklch(1 0 0 / 0.028) 1px, transparent 1px),
         linear-gradient(135deg, oklch(0.09 0.018 260), oklch(0.12 0.02 220) 42%, oklch(0.08 0.01 180));
@@ -347,11 +350,26 @@
       border-radius: var(--radius);
       display: grid;
       place-items: center;
-      background: color-mix(in oklch, var(--model-color) 82%, white 8%);
+      background:
+        linear-gradient(135deg, color-mix(in oklch, var(--model-color) 88%, white 8%), oklch(0.88 0.12 190));
       color: oklch(0.08 0 0);
       font-family: var(--mono);
       font-weight: 900;
       box-shadow: 0 0 24px color-mix(in oklch, var(--model-color) 36%, transparent);
+    }
+
+    .model-emblem svg {
+      width: 27px;
+      height: 27px;
+      display: block;
+    }
+
+    .chatgpt-glyph {
+      fill: none;
+      stroke: oklch(0.08 0 0);
+      stroke-width: 2.15;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .model-brand {
@@ -640,18 +658,65 @@
       color: var(--ink);
     }
 
-    .below,
-    .sections {
-      display: grid;
-      grid-template-columns: minmax(320px, 0.88fr) minmax(0, 1.12fr);
-      gap: 22px;
+    .detail-deck {
+      padding: 0;
+      overflow: hidden;
     }
 
-    .summary,
-    .catalog,
-    .flow,
-    .compliance {
-      padding: 20px;
+    .deck-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, oklch(0.78 0.15 210 / 0.12), oklch(0.68 0.2 338 / 0.08), transparent),
+        oklch(0.1 0.016 238);
+    }
+
+    .tab-button {
+      min-height: 42px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 780;
+      transition: color 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .tab-button:hover,
+    .tab-button.active {
+      border-color: oklch(0.78 0.15 210 / 0.36);
+      background: linear-gradient(135deg, oklch(0.78 0.15 210 / 0.16), oklch(0.68 0.2 338 / 0.1));
+      color: var(--ink);
+      box-shadow: 0 0 22px oklch(0.78 0.15 210 / 0.14);
+    }
+
+    .deck-body {
+      position: relative;
+      min-height: 360px;
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 22px;
+      animation: pageIn 260ms ease both;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) rotateX(4deg);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0);
+      }
     }
 
     .summary-list {
@@ -831,8 +896,7 @@
       }
 
       .hero,
-      .below,
-      .sections {
+      .detail-deck {
         grid-template-columns: 1fr;
       }
     }
@@ -850,6 +914,10 @@
       .topbar {
         flex-direction: column;
         align-items: flex-start;
+      }
+
+      .deck-tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .hero-copy {
@@ -913,9 +981,9 @@
       </div>
       <nav aria-label="主导航">
         <a class="active" href="#order">模型选购</a>
-        <a href="#summary">咨询摘要</a>
-        <a href="#catalog">官方价格</a>
-        <a href="#flow">交付流程</a>
+        <a href="#details">详情翻页</a>
+        <a href="#details">官方价格</a>
+        <a href="#details">支付流程</a>
       </nav>
       <div class="side-box">
         <strong>官方 API 基准价</strong>
@@ -955,7 +1023,13 @@
           <div class="holo" aria-label="模型软件外观预览">
             <div class="model-stage" id="modelStage">
               <article class="model-card active" data-card="0" style="--model-color: var(--cyan);">
-                <header><div class="model-emblem">O</div><div class="model-brand"><strong>OpenAI</strong><span>GPT-5.5 CONSOLE</span></div></header>
+                <header><div class="model-emblem" aria-label="ChatGPT 图标">
+                  <svg viewBox="0 0 32 32" role="img" aria-hidden="true">
+                    <path class="chatgpt-glyph" d="M16 4.7c2.3-1.4 5.2-.2 6.1 2.2 2.5.2 4.4 2.4 4.2 5 .1 1.1-.3 2.3-1.1 3.1 1.4 2.3.3 5.2-2.1 6.2-.3 2.5-2.5 4.4-5.1 4.2-1.1.1-2.2-.3-3.1-1.1-2.3 1.4-5.2.3-6.2-2.1-2.5-.3-4.4-2.5-4.2-5.1-.1-1.1.3-2.2 1.1-3.1-1.4-2.3-.3-5.2 2.1-6.2.3-2.5 2.5-4.4 5.1-4.2 1.1-.1 2.2.3 3.2 1.1Z"/>
+                    <path class="chatgpt-glyph" d="M10.1 12.2 16 8.8l5.9 3.4v7.1L16 22.7l-5.9-3.4v-7.1Z"/>
+                    <path class="chatgpt-glyph" d="M16 8.8v6.9l5.9 3.6M10.1 12.2l5.9 3.5v7"/>
+                  </svg>
+                </div><div class="model-brand"><strong>OpenAI</strong><span>GPT-5.5 CONSOLE</span></div></header>
                 <div class="window-bars"><span style="--w: 84%"></span><span style="--w: 58%"></span><span style="--w: 71%"></span></div>
                 <div class="terminal-lines"><span>input <b>$5.00</b></span><span>cache <b>$0.50</b></span><span>output <b>$30.00</b></span><span>route <b>flagship</b></span></div>
               </article>
@@ -1117,69 +1191,75 @@
         </form>
       </section>
 
-      <section class="below">
-        <div class="panel summary" id="summary">
-          <h2 class="panel-title">咨询单摘要</h2>
-          <dl class="summary-list">
-            <div class="row"><dt>模型</dt><dd><strong id="sumPlan">OpenAI GPT-5.5</strong></dd></div>
-            <div class="row"><dt>供应商</dt><dd><strong id="sumProvider">OpenAI</strong></dd></div>
-            <div class="row"><dt>输入</dt><dd><strong id="sumInput">$5.00 / 1M</strong></dd></div>
-            <div class="row"><dt>缓存</dt><dd><strong id="sumCache">$0.50 / 1M</strong></dd></div>
-            <div class="row"><dt>输出</dt><dd><strong id="sumOutput">$30.00 / 1M</strong></dd></div>
-            <div class="row"><dt>编号</dt><dd><strong id="sumOrder">待生成</strong></dd></div>
-          </dl>
-          <div class="notice">
-            价格说明：海外模型以美元官方价展示，国内落地报价通常还需要加入汇率、税费、通道成本、发票、人工服务和供应商可用性确认。
+      <section class="panel detail-deck" id="details">
+        <div class="deck-tabs" role="tablist" aria-label="采购详情">
+          <button class="tab-button active" type="button" data-tab="summary" role="tab" aria-selected="true">咨询摘要</button>
+          <button class="tab-button" type="button" data-tab="catalog" role="tab" aria-selected="false">官方价格</button>
+          <button class="tab-button" type="button" data-tab="payment" role="tab" aria-selected="false">支付流程</button>
+          <button class="tab-button" type="button" data-tab="sources" role="tab" aria-selected="false">价格来源</button>
+        </div>
+        <div class="deck-body">
+          <div class="tab-panel active" id="summary" data-panel="summary" role="tabpanel">
+            <h2 class="panel-title">咨询单摘要</h2>
+            <dl class="summary-list">
+              <div class="row"><dt>模型</dt><dd><strong id="sumPlan">OpenAI GPT-5.5</strong></dd></div>
+              <div class="row"><dt>供应商</dt><dd><strong id="sumProvider">OpenAI</strong></dd></div>
+              <div class="row"><dt>输入</dt><dd><strong id="sumInput">$5.00 / 1M</strong></dd></div>
+              <div class="row"><dt>缓存</dt><dd><strong id="sumCache">$0.50 / 1M</strong></dd></div>
+              <div class="row"><dt>输出</dt><dd><strong id="sumOutput">$30.00 / 1M</strong></dd></div>
+              <div class="row"><dt>编号</dt><dd><strong id="sumOrder">待生成</strong></dd></div>
+            </dl>
+            <div class="notice">
+              价格说明：海外模型以美元官方价展示，国内落地报价通常还需要加入汇率、税费、通道成本、发票、人工服务和供应商可用性确认。
+            </div>
           </div>
-        </div>
 
-        <div class="panel catalog" id="catalog">
-          <h2 class="panel-title">官方价格表</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>模型</th>
-                <th>输入 / 1M</th>
-                <th>缓存 / 1M</th>
-                <th>输出 / 1M</th>
-                <th>币种</th>
-              </tr>
-            </thead>
-            <tbody id="orders">
-              <tr><td>OpenAI GPT-5.5</td><td>$5.00</td><td>$0.50</td><td>$30.00</td><td><span class="pill usd">USD</span></td></tr>
-              <tr><td>Claude Sonnet 4.6</td><td>$3.00</td><td>$0.30</td><td>$15.00</td><td><span class="pill usd">USD</span></td></tr>
-              <tr><td>Gemini 3.1 Pro Preview</td><td>$2.00</td><td>$0.20</td><td>$12.00</td><td><span class="pill usd">USD</span></td></tr>
-              <tr><td>DeepSeek V4 Pro</td><td>$0.435</td><td>$0.003625</td><td>$0.87</td><td><span class="pill usd">USD</span></td></tr>
-              <tr><td>DeepSeek V4 Flash</td><td>$0.14</td><td>$0.0028</td><td>$0.28</td><td><span class="pill usd">USD</span></td></tr>
-              <tr><td>Qwen3.7 Max</td><td>$2.50</td><td>平台规则</td><td>$7.50</td><td><span class="pill usd">USD</span></td></tr>
-              <tr><td>Qwen3.7 Plus</td><td>$0.40</td><td>平台规则</td><td>$1.60</td><td><span class="pill usd">USD</span></td></tr>
-              <tr><td>Kimi K2.6</td><td>$0.95</td><td>$0.16</td><td>$4.00</td><td><span class="pill usd">USD</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+          <div class="tab-panel" id="catalog" data-panel="catalog" role="tabpanel">
+            <h2 class="panel-title">官方价格表</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>模型</th>
+                  <th>输入 / 1M</th>
+                  <th>缓存 / 1M</th>
+                  <th>输出 / 1M</th>
+                  <th>币种</th>
+                </tr>
+              </thead>
+              <tbody id="orders">
+                <tr><td>OpenAI GPT-5.5</td><td>$5.00</td><td>$0.50</td><td>$30.00</td><td><span class="pill usd">USD</span></td></tr>
+                <tr><td>Claude Sonnet 4.6</td><td>$3.00</td><td>$0.30</td><td>$15.00</td><td><span class="pill usd">USD</span></td></tr>
+                <tr><td>Gemini 3.1 Pro Preview</td><td>$2.00</td><td>$0.20</td><td>$12.00</td><td><span class="pill usd">USD</span></td></tr>
+                <tr><td>DeepSeek V4 Pro</td><td>$0.435</td><td>$0.003625</td><td>$0.87</td><td><span class="pill usd">USD</span></td></tr>
+                <tr><td>DeepSeek V4 Flash</td><td>$0.14</td><td>$0.0028</td><td>$0.28</td><td><span class="pill usd">USD</span></td></tr>
+                <tr><td>Qwen3.7 Max</td><td>$2.50</td><td>平台规则</td><td>$7.50</td><td><span class="pill usd">USD</span></td></tr>
+                <tr><td>Qwen3.7 Plus</td><td>$0.40</td><td>平台规则</td><td>$1.60</td><td><span class="pill usd">USD</span></td></tr>
+                <tr><td>Kimi K2.6</td><td>$0.95</td><td>$0.16</td><td>$4.00</td><td><span class="pill usd">USD</span></td></tr>
+              </tbody>
+            </table>
+          </div>
 
-      <section class="sections">
-        <div class="panel flow" id="flow">
-          <h2 class="panel-title">交付流程</h2>
-          <ol class="steps">
-            <li><span>1</span><div><strong>选择模型</strong>客户按场景、预算和供应商偏好选择目标模型。</div></li>
-            <li><span>2</span><div><strong>核算报价</strong>运营按官方价格、汇率、税费、通道和服务要求生成报价。</div></li>
-            <li><span>3</span><div><strong>确认合规</strong>确认供应商条款、客户主体、数据安全和内容安全要求。</div></li>
-            <li><span>4</span><div><strong>开通交付</strong>完成额度开通、网关配置、用量报表或企业账号交接。</div></li>
-          </ol>
-        </div>
+          <div class="tab-panel" id="payment" data-panel="payment" role="tabpanel">
+            <h2 class="panel-title">支付流程</h2>
+            <ol class="steps">
+              <li><span>1</span><div><strong>生成咨询单</strong>客户选择模型、用量、发票和交付方式。</div></li>
+              <li><span>2</span><div><strong>人工报价</strong>运营按官方价格、汇率、税费、通道和服务要求生成正式报价。</div></li>
+              <li><span>3</span><div><strong>对公付款</strong>确认合同、收款账户、发票抬头和付款备注，不在静态页面直接收款。</div></li>
+              <li><span>4</span><div><strong>开通交付</strong>完成额度开通、网关配置、用量报表或企业账号交接。</div></li>
+            </ol>
+          </div>
 
-        <div class="panel compliance">
-          <h2 class="panel-title">价格来源</h2>
-          <ul class="source-list">
-            <li><a href="https://developers.openai.com/api/docs/pricing" target="_blank" rel="noreferrer">OpenAI API Pricing</a></li>
-            <li><a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank" rel="noreferrer">Anthropic Claude API Pricing</a></li>
-            <li><a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noreferrer">Google Gemini API Pricing</a></li>
-            <li><a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noreferrer">DeepSeek Models & Pricing</a></li>
-            <li><a href="https://docs.qwencloud.com/developer-guides/getting-started/pricing" target="_blank" rel="noreferrer">Qwen Cloud Pricing</a></li>
-            <li><a href="https://platform.kimi.ai/" target="_blank" rel="noreferrer">Kimi API Platform</a></li>
-          </ul>
+          <div class="tab-panel" id="sources" data-panel="sources" role="tabpanel">
+            <h2 class="panel-title">价格来源</h2>
+            <ul class="source-list">
+              <li><a href="https://developers.openai.com/api/docs/pricing" target="_blank" rel="noreferrer">OpenAI API Pricing</a></li>
+              <li><a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank" rel="noreferrer">Anthropic Claude API Pricing</a></li>
+              <li><a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noreferrer">Google Gemini API Pricing</a></li>
+              <li><a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noreferrer">DeepSeek Models & Pricing</a></li>
+              <li><a href="https://docs.qwencloud.com/developer-guides/getting-started/pricing" target="_blank" rel="noreferrer">Qwen Cloud Pricing</a></li>
+              <li><a href="https://platform.kimi.ai/" target="_blank" rel="noreferrer">Kimi API Platform</a></li>
+            </ul>
+          </div>
         </div>
       </section>
     </main>
@@ -1194,10 +1274,11 @@
     const company = document.querySelector("#company");
     const contact = document.querySelector("#contact");
     const agree = document.querySelector("#agree");
-    const orders = document.querySelector("#orders");
     const toast = document.querySelector("#toast");
     const modelCards = document.querySelectorAll(".model-card");
     const modelDots = document.querySelectorAll(".model-dot");
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabPanels = document.querySelectorAll(".tab-panel");
     const summary = {
       plan: document.querySelector("#sumPlan"),
       provider: document.querySelector("#sumProvider"),
@@ -1234,6 +1315,18 @@
       syncModelVisual(selected.dataset.card);
     }
 
+    function openTab(tabName) {
+      tabButtons.forEach((button) => {
+        const active = button.dataset.tab === tabName;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-selected", String(active));
+      });
+
+      tabPanels.forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.panel === tabName);
+      });
+    }
+
     function updateSummary() {
       summary.plan.textContent = selected.dataset.name;
       summary.provider.textContent = selected.dataset.provider;
@@ -1262,6 +1355,10 @@
       });
     });
 
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => openTab(button.dataset.tab));
+    });
+
     form.addEventListener("submit", (event) => {
       event.preventDefault();
 
@@ -1272,16 +1369,7 @@
 
       const orderId = `AI-${Math.floor(100000 + Math.random() * 899999)}`;
       summary.order.textContent = orderId;
-
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${selected.dataset.name}</td>
-        <td>${selected.dataset.input}</td>
-        <td>${selected.dataset.cache}</td>
-        <td>${selected.dataset.output}</td>
-        <td><span class="pill wait">待跟进</span></td>
-      `;
-      orders.prepend(row);
+      openTab("summary");
       showToast(`咨询单 ${orderId} 已生成，运营可按联系方式继续跟进。`);
     });
 
